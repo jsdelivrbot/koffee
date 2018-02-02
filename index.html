@@ -1,0 +1,133 @@
+<link rel="stylesheet" href="photon.css">
+<link rel="stylesheet" href="css.css">
+
+<script>
+  window.$ = window.jQuery = require('jquery');
+  require("electron-titlebar");
+</script>
+<link rel="stylesheet" href="emoji.css">
+<script src="emoji.js"></script>
+
+<script src="script.js"></script>
+
+<div class="window">
+
+<div class="center-form">
+  <img id="login-loading" src="spinner.svg"></img>
+  <img class="img-circle img-login" src="https://instagram.frun1-1.fna.fbcdn.net/vp/3230896e49952035c4a21d078561d30f/5B1DB27A/t51.2885-19/11906329_960233084022564_1448528159_a.jpg"></img>
+  <input class="input-login" id="username" type="text" placeholder="Username"/>
+  <input class="input-login" id="password" type="password" placeholder="Pass#or!"/>
+  <a class="button-login" id="button-login"><span class="icon icon-key"></span></a>
+</div>
+  <div id="electron-titlebar" class="drag">
+  </div>
+
+
+
+  <div class="window-content">
+    <input class="form-control" type="text" placeholder="Search">
+    <span class="icon icon-search"></span>
+    <img id="loading" src="spinner.svg"></img>
+    <div class="pane-group">
+
+      <div class="pane-sm sidebar" style="overflow-y : scroll;">
+        <br>
+        <br>
+        <ul class="list-group">
+
+          <chat-container></chat-container>
+        </ul>
+      </div>
+      <div class="pane">
+        <br>
+        <br>
+        <div class="chat-pane">
+        </div>
+        <input type="text" name="send" id="send" placeholder="Type something ..." />
+        <span class="icon icon-paper-plane"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<script>
+  function startload() {
+    $("#loading").css("opacity", "1");
+  }
+
+  function endload() {
+    $("#loading").css("opacity", "0");
+  }
+
+  async function instachat(){
+    $("window-content").removeClass("blur");
+    $("center-form").hide();
+    startload();
+    session = await register("", ""); // leggere la password dal token
+    feed = await getInbox();
+    console.log("FEED************************************");
+    console.log(feed);
+    console.log("****************************************")
+    await domChats(feed);
+    endload();
+
+
+
+    $(".chat-pane").scroll(async function(d) {
+      off = d.target.scrollTop;
+      b = d.target.scrollHeight;
+      if ((moreavaible == true) && (off < 500) && (scrollheight != b) && (updatingflag == false)) {
+        startload();
+        console.log(b);
+        console.log(moreavaible);
+        updatingflag = true;
+        let more = await getChat(chatid, cursor);
+        d = $(".chat-pane").find("p");
+        scrollheight = b;
+        renderChat(more, d);
+        $(".chat-pane").scrollTop(document.getElementsByClassName("chat-pane")[0].scrollHeight - scrollheight);
+        updatingflag = false;
+        endload();
+      }
+    })
+
+    $("#send").keydown(async function(e) {
+      if (e.keyCode == 13) {
+        startload();
+        text = $("#send").val();
+        startload();
+        thread = await Client.Thread.configureText(session, userid, text)
+        endload();
+        console.log(thread)
+        c = $("<li>")
+        c.addClass("message");
+        c.addClass("me")
+        c.text(text);
+        $(".chat-pane").append(c)
+        var objDiv = document.getElementsByClassName("chat-pane")[0];
+        console.log(objDiv.scrollHeight)
+        objDiv.scrollTop = objDiv.scrollHeight;
+        $("#send").val("");
+        endload();
+      }
+    })
+
+  }
+  $(document).ready(async function() {
+
+    if (Object.keys( new Client.CookieFileStorage(__dirname + '/user.json').storage.idx).length == 0){
+      login();
+    }else{
+      instachat();
+    }
+
+  })
+
+
+
+</script>
