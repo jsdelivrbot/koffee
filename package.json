@@ -1,0 +1,32 @@
+{
+  "name": "koffee",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "v": "electron -v"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "blowfish": "^1.0.1",
+    "chalk": "^2.3.0",
+    "electron": "latest",
+    "electron-titlebar": "0.0.3",
+    "emojify.js": "^1.1.0",
+    "es6-shim": "^0.35.3",
+    "inquirer": "^5.0.1",
+    "instagram-private-api": "^0.6.7",
+    "jquery": "^3.3.1",
+    "lodash": "^4.17.4",
+    "recursive-diff": "^0.1.2"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "user.json",
+      "node_modules"
+    ],
+    "delay": "2500"
+  }
+}
