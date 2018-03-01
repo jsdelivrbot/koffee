@@ -1,12 +1,12 @@
 <link rel="stylesheet" href="photon.css">
 <link rel="stylesheet" href="css.css">
 <link rel="stylesheet" href="emoji.css">
+<script>require('electron-connect').client.create()</script>
 <script>
   window.$ = window.jQuery = require('jquery');
   require("electron-titlebar");
   require('es6-shim');
   require('./emoji.js');
-
   window.Vue = require('./vue.js');
 </script>
 <script src="script.js"></script>

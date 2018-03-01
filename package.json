@@ -16,6 +16,7 @@
     "electron-titlebar": "0.0.3",
     "emojify.js": "^1.1.0",
     "es6-shim": "^0.35.3",
+    "gulp": "^3.9.1",
     "inquirer": "^5.0.1",
     "instagram-private-api": "^0.6.7",
     "jquery": "^3.3.1",
@@ -28,5 +29,8 @@
       "node_modules"
     ],
     "delay": "2500"
+  },
+  "devDependencies": {
+    "electron-connect": "^0.6.3"
   }
 }
