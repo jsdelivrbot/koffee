@@ -1,130 +1,247 @@
 <link rel="stylesheet" href="photon.css">
 <link rel="stylesheet" href="css.css">
+<link rel="stylesheet" href="emoji.css">
 <script>
   window.$ = window.jQuery = require('jquery');
   require("electron-titlebar");
   require('es6-shim');
+  require('./emoji.js');
+
+  window.Vue = require('./vue.js');
 </script>
-<link rel="stylesheet" href="emoji.css">
-
-<script src="emoji.js"></script>
 <script src="script.js"></script>
+<div class="window" id="app">
 
-<div class="window">
-
-<div class="center-form">
+<!--<div class="center-form">
   <img id="login-loading" src="spinner.svg"></img>
   <img class="img-circle img-login" src="https://instagram.frun1-1.fna.fbcdn.net/vp/3230896e49952035c4a21d078561d30f/5B1DB27A/t51.2885-19/11906329_960233084022564_1448528159_a.jpg"></img>
   <input class="input-login" id="username" type="text" placeholder="Username"/>
   <input class="input-login" id="password" type="password" placeholder="Pass#or!"/>
   <a class="button-login" id="button-login"><span class="icon icon-key"></span></a>
-</div>
+</div>-->
 
   <div id="electron-titlebar" class="drag">
   </div>
 
-  <div class="window-content">
-    <input class="form-control" type="text" placeholder="Search">
+<div class="window-content">
+    <input v-model="filter" class="form-control" type="text" placeholder="Search">
     <span class="icon icon-search"></span>
-    <img id="loading" src="spinner.svg"></img>
+    <img v-if="loading" id="loading" src="spinner.svg"></img>
     <div class="pane-group">
       <div class="pane-sm sidebar" style="overflow-y : scroll;">
         <br>
         <br>
         <ul class="list-group">
-          <chat-container></chat-container>
+          <li v-if="chat.title.includes(filter) || filtered === true" v-for="chat in chats" v-on:click="openChat(chat)" class="list-group-item">
+            <img class="img-circle media-object pull-left" v-bind:src="chat.img" width="32" height="32">
+            <div class="media-body">
+              <strong>{{chat.title}}</strong>
+              <p>{{chat.firstmsg}}</p>
+            </div>
+          </li>
         </ul>
       </div>
       <div class="pane">
         <br>
         <br>
         <div class="chat-pane">
+          <li v-for="message in chat" class="message" v-bind:class="message.from" >{{message.text}}
+            <video controls="true" class="direct" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 2" v-bind:src="message.mediashare._params.videos[0].url"></video>
+            <img class="direct" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 1" v-bind:src="message.mediashare._params.images[0].url"></img>
+            <img class="direct" v-if="message.type === 'media'" v-bind:src="message.media[0].url"></img>
+            <img class="direct" v-if="message.type === 'reel_share' && message.reelShare.media.expiring_at != 0" v-bind:src="message.reelShare.media.image_versions2.candidates['0'].url"></img>
+            <p style="color : red;" v-if="message.type === 'reel_share' && message.reelShare.media.expiring_at == 0">Expired</p>
+            <p v-if="message.type === 'reel_share'">{{message.reelShare.text}}</p>
+          </li>
         </div>
-        <input type="text" name="send" id="send" placeholder="Type something ..." />
-        <span class="icon icon-paper-plane"></span>
+        <input v-model="message" type="text" name="send" id="send" placeholder="Type something ..." />
+        <span v-on:click="sendMessage" v-if="messageIsEmpty && chatid != '' " class="icon icon-paper-plane"></span>
       </div>
     </div>
   </div>
 </div>
 
-
-
-
-
-
 <script>
-  function startload() {
-    $("#loading").css("opacity", "1");
-  }
+/***************************************
+TODO linkS
 
-  function endload() {
-    $("#loading").css("opacity", "0");
-  }
-
-  async function instachat(){
-    $("window-content").removeClass("blur");
-    $("center-form").hide();
-    startload();
-    session = await register("", ""); // leggere la password dal token
-    feed = await getInbox();
-    console.log("FEED************************************");
-    console.log(feed);
-    console.log("****************************************")
-    await domChats(feed);
-    endload();
-
-
-
-    $(".chat-pane").scroll(async function(d) {
-      off = d.target.scrollTop;
-      b = d.target.scrollHeight;
-      if ((moreavaible == true) && (off < 500) && (scrollheight != b) && (updatingflag == false)) {
-        startload();
-        console.log(b);
-        console.log(moreavaible);
-        updatingflag = true;
-        let more = await getChat(chatid, cursor);
-        d = $(".chat-pane").find("p");
-        scrollheight = b;
-        renderChat(more, d);
-        $(".chat-pane").scrollTop(document.getElementsByClassName("chat-pane")[0].scrollHeight - scrollheight);
-        updatingflag = false;
-        endload();
+***************************************/
+updatingFlag = false;
+moreAvaible = false;
+scrollHeight = 0;
+flags = {
+  initChat : false,
+  initLoadMore : false
+}
+var app = new Vue({
+  el: '#app',
+  data: {
+    moreAvaible : "",
+    selfid : "",
+    chatid : "",
+    userid : "",
+    cursor : "",
+    message : "",
+    loading : false,
+    chats : [],
+    chat : [],
+    filter : ""
+  },
+  computed : {
+    messageIsEmpty : function(){
+      return this.message != ""
+    },
+    filtered : function(){
+      if (this.filter == ""){
+        return true
+      }else{
+        return false
       }
-    })
 
-    $("#send").keydown(async function(e) {
-      if (e.keyCode == 13) {
-        startload();
-        text = $("#send").val();
-        startload();
-        thread = await Client.Thread.configureText(session, userid, text)
-        endload();
-        console.log(thread)
-        c = $("<li>")
-        c.addClass("message");
-        c.addClass("me")
-        c.text(text);
-        $(".chat-pane").append(c)
-        var objDiv = document.getElementsByClassName("chat-pane")[0];
-        console.log(objDiv.scrollHeight)
-        objDiv.scrollTop = objDiv.scrollHeight;
-        $("#send").val("");
-        endload();
-      }
-    })
-
-  }
-  $(document).ready(async function() {
-
-    if (Object.keys( new Client.CookieFileStorage(__dirname + '/user.json').storage.idx).length == 0){
-      login();
-    }else{
-      instachat();
     }
+  },
+  methods: {
+    openChat: async function (chat) {
+      flags.initChat = true;
+        this.loading = true;
+        this.chatid = chat.id;
+        this.userid = chat.userid;
+        const self = this;
+        selfid = await session.getAccount();
+        selfid = selfid.id;
+        chat = await getChat(chat.id);
+        console.log("CHAT ID : "+chatid);
+        console.log(chat)
+        //chat.reverse();
+        self.cursor = chat.cursor;
+        moreAvaible = chat.moreAvaible;
+        c = chat.f.map(function(t){
 
-  })
+          a = {
+            type : t._params.type,
+            text : t._params.text,
+            from : "",
+            mediashare :t.mediaShare ,
+            placeholder : t.placeholder,
+            media : t._params.media,
+            reelShare : t._params.reelShare
+          }
+          //console.log(t._params.accountId)
+          if (selfid == t._params.accountId) {a.from = "me";}else{a.from = ""}
+          return a
+        }
 
+      )
+      console.log("CHAT DATA ********************************************")
+      console.log(c);
+      console.log("********************************************")
+      flags.initChat = true;
+      this.chat = c.reverse();
+      this.loading = false;
+    },
+    loadMoreChat : async function(){
+        console.log("load more chats")
+        this.loading = true;
+        updatingFlag = true;
+        const self = this;
+        selfid = await session.getAccount();
+        selfid = selfid.id;
+        chat = await getChat(this.chatid, this.cursor);
+        console.log("CHAT ID : "+chatid);
+        console.log(chat)
+        //chat.reverse();
+        self.cursor = chat.cursor;
+        moreAvaible = chat.moreAvaible;
 
+        c = chat.f.map(function(t){
+          a = {
+            type : t._params.type,
+            text : t._params.text,
+            from : "",
+            mediashare :t.mediaShare ,
+            placeholder : t.placeholder,
+            media : t._params.media,
+            reelShare : t._params.reelShare,
+            timestamp : t._params.created
+          }
+          //console.log(t._params.accountId)
+          if (selfid == t._params.accountId) {a.from = "me";}else{a.from = ""}
+          return a
+        }).reverse();
+        console.log("CHAT DATA ********************************************")
+        console.log(c);
+        console.log("********************************************")
+          flags.initLoadMore = true;
+        for (let i in c) {
+        app.chat.unshift(c[i]);
+        }
+        //this.chat = c.reverse();
+        //$(".chat-pane").scrollTop(document.getElementsByClassName("chat-pane")[0].scrollHeight);
+        this.loading = false;
+    },
+    updateChat : async function(){
 
+    }
+    ,
+    sendMessage : async function(){
+      this.loading = true;
+      thread = await Client.Thread.configureText(session, this.userid, this.message);
+      this.loading = false;
+      this.chat.push({from :"me",media:undefined,mediashare:undefined,placeholder:undefined,reelShare:undefined,text:this.message,type:"text"})
+      this.message = "";
+    }
+  },
+  beforeUpdate : function(){
+    if (updatingFlag)
+    {
+      scrollHeight = document.getElementsByClassName("chat-pane")[0].scrollHeight
+    }
+  },
+  updated: function () {
+    if (flags.initChat == true){
+      console.log("updated");
+      $(".chat-pane").scrollTop(document.getElementsByClassName("chat-pane")[0].scrollHeight);
+      flags.initChat = false;
+    }
+    if (flags.initLoadMore)
+    {
+      console.log("changing scrolltop")
+      $(".chat-pane").scrollTop(document.getElementsByClassName("chat-pane")[0].scrollHeight - scrollHeight);
+      updatingFlag = false;
+      flags.initLoadMore = false;
+    }
+    //$(".message").emojify();
+}
+})
+
+instachat();
+console.log(app.loading);
+async function instachat(){
+  //$("window-content").removeClass("blur");
+  //$("center-form").hide();
+  app.loading = true;
+  session = await register("", ""); // leggere la password dal token
+  feed = await getInbox();
+  console.log("FEED************************************");
+  feed = feed.map(t => ({
+    title: t.accounts[0].username,
+    img : t.accounts[0].profilePicUrl,
+    firstmsg: t.items[0].text,
+    id: t.id,
+    userid : t.accounts[0].id
+  }))
+  console.log(feed);  //$("center-form").hide();
+  app.loading = true;
+  console.log("****************************************")
+  app.chats = feed;
+  app.loading = false;
+  setInterval(getNewTimestamps,500)
+}
+
+$(".chat-pane").scroll(async function(d) {
+  off = d.target.scrollTop;
+  if ((moreAvaible == true) && (off < 500) &&(updatingFlag == false)) {
+    app.loadMoreChat();
+  }
+})
 </script>
