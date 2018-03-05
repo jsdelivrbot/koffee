@@ -96,6 +96,9 @@ li{
   transform: rotate(-45deg);
 }
 
+.unsent {
+	opacity : 0.5 !important;
+}
 #send {
 		padding-right: 5px;
 		padding-top : 5px;

@@ -1,8 +1,3 @@
-var Client = require('instagram-private-api').V1;
-var {prompt} = require("inquirer")
-var chalk = require('chalk');
-var Promise = require('bluebird');
-
 var electron = require('electron');
 const remote = require('electron').remote;
 var {
