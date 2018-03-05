@@ -45,6 +45,7 @@
             <img class="direct" v-if="message.type === 'reel_share' && message.reelShare.media.expiring_at != 0" v-bind:src="message.reelShare.media.image_versions2.candidates['0'].url"></img>
             <p style="color : red;" v-if="message.type === 'reel_share' && message.reelShare.media.expiring_at == 0">Expired</p>
             <p v-if="message.type === 'reel_share'">{{message.reelShare.text}}</p>
+            <a v-if="message.type === 'link'" v-on:click="openLink(message.link._params.text)" href="#">{{message.link._params.text}}</a>
           </li>
         </div>
         <input v-model="message" type="text" name="send" id="send" placeholder="Type something ..." />

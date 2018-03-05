@@ -10,6 +10,7 @@ Chatparser = function(chat){
         media: t._params.media,
         reelShare: t._params.reelShare,
         timestamp : t._params.created,
+        link : t.link,
         unsent : false
       }
       //console.log(t._params.accountId)

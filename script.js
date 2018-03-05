@@ -1,4 +1,6 @@
-const remote = require('electron').remote;
+
+var {shell}  = require("electron")
+
 //var diff = require('recursive-diff');
 var Client = require('instagram-private-api').V1;
 var Promise = require('bluebird');
@@ -115,6 +117,9 @@ var app = new Vue({
         unsent : true
       })
       this.message = "";
+    },
+    openLink : function(link){
+      shell.openExternal(link)
     }
   },
   beforeUpdate: function() {
