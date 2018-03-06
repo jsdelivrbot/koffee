@@ -1,15 +1,3 @@
-
-var {shell}  = require("electron")
-
-//var diff = require('recursive-diff');
-var Client = require('instagram-private-api').V1;
-var Promise = require('bluebird');
-var chatparser = require('./chatparser.js')
-//var Blowfish = require('blowfish');
-require("./array-diff.js")
-window.$ = window.jQuery = require('jquery');
-require("./electron-titlebar");
-require('./emoji.js');
 window.Vue = require('./vue.js');
 /***************************************
 TODO linkS
@@ -27,7 +15,10 @@ var flags = {
 var app = new Vue({
   el: '#app',
   data: {
+    videocontrols : false,
     moreAvaible: "",
+    lightbox : false,
+    lightboxsrc : "",
     selfid: "",
     chatid: "",
     userid: "",
@@ -53,6 +44,10 @@ var app = new Vue({
   },
   methods: {
     openChat: async function(chat) {
+      this.chats.forEach(function(v,index){
+        v.selected = false;
+      })
+      chat.selected = true;
       flags.initChat = true;
       this.loading = true;
       this.chatid = chat.id;
@@ -103,23 +98,50 @@ var app = new Vue({
 
     },
     sendMessage: async function() {
-      this.loading = true;
-      thread = await Client.Thread.configureText(session, this.userid, this.message);
-      this.loading = false;
-      this.chat.push({
-        me: true,
-        media: undefined,
-        mediashare: undefined,
-        placeholder: undefined,
-        reelShare: undefined,
-        text: this.message,
-        type: "text",
-        unsent : true
-      })
-      this.message = "";
+      if (this.messageIsEmpty){
+        this.loading = true;
+        thread = await Client.Thread.configureText(session, this.userid, this.message);
+        console.log(thread)
+        this.loading = false;
+        this.chat.push({
+          me: true,
+          media: undefined,
+          mediashare: undefined,
+          placeholder: undefined,
+          reelShare: undefined,
+          text: this.message,
+          type: "text",
+          unsent : true
+        })
+        this.message = "";
+      }
+
     },
     openLink : function(link){
       shell.openExternal(link)
+    },
+    openLightbox : function(src){
+      this.lightbox = true;
+      this.lightboxsrc = src;
+    },
+    closeLightbox : function(){
+      this.lightbox = false;
+    },
+    downloadMedia : function(url){
+      require("electron").remote.require("electron-download-manager").download({
+              url: url
+          }, function(error, url){
+              if(error){
+                  alert("ERROR: " + url);
+                  return;
+              }
+
+              console.log("downloaded")
+
+          });
+    },
+    emojiparse : function(message){
+      return $("<p>").text(message).emojify().html();
     }
   },
   beforeUpdate: function() {
@@ -140,9 +162,26 @@ var app = new Vue({
       flags.initLoadMore = false;
     }
     //$(".message").emojify();
+  },
+  watch : {
+    lightbox : function(val){
+      if (val){
+        Vue.nextTick(function () {
+          setTimeout(function(){$(".lightbox").addClass("active")},0);
+        })
+      }
+    }
   }
 })
-
+var {shell}  = require("electron")
+var Client = require('instagram-private-api').V1;
+var Promise = require('bluebird');
+var chatparser = require('./chatparser.js')
+require("./array-diff.js")
+window.$ = window.jQuery = require('jquery');
+require('./emoji.js')
+require("./electron-titlebar");
+var instavideo = require('./instavideo.js')
 instachat();
 console.log(app.loading);
 async function instachat() {
@@ -152,13 +191,26 @@ async function instachat() {
   session = await register(require("./config.json").user,require("./config.json").password); // leggere la password dal token
   feed = await getInbox();
   console.log("FEED************************************");
-  feed = feed.map(t => ({
-    title: t.accounts[0].username,
-    img: t.accounts[0].profilePicUrl,
-    firstmsg: t.items[0].text,
-    id: t.id,
-    userid: t.accounts[0].id
-  }))
+  feed = feed.map(function(t){
+    let a = {
+        selected : false,
+        title: t.accounts[0].username,
+        img: t.accounts[0].profilePicUrl,
+        firstmsg: t.items[0].text,
+        itemtype: t.items[0].itemType,
+        id: t.id,
+        userid: t.accounts[0].id}
+    switch (a.itemtype){
+      case "text" :
+        break;
+      case "mediaShare":
+        a.firstmsg = "Media Share";
+        break;
+      default: a.firstmsg = "Media";
+        break;
+    }
+    return a;
+  })
   console.log(feed); //$("center-form").hide();
   app.loading = true;
   console.log("****************************************")

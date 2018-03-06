@@ -2,6 +2,7 @@ Chatparser = function(chat){
   _chat_ = chat.f.map(function(t) {
 
       a = {
+        videocontrols :false,
         type: t._params.type,
         text: t._params.text,
         me: false,

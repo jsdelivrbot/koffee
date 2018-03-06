@@ -4,7 +4,6 @@
 <script>require('electron-connect').client.create()</script>
 
 <div class="window" id="app">
-
 <!--<div class="center-form">
   <img id="login-loading" src="spinner.svg"></img>
   <img class="img-circle img-login" src="https://instagram.frun1-1.fna.fbcdn.net/vp/3230896e49952035c4a21d078561d30f/5B1DB27A/t51.2885-19/11906329_960233084022564_1448528159_a.jpg"></img>
@@ -12,7 +11,9 @@
   <input class="input-login" id="password" type="password" placeholder="Pass#or!"/>
   <a class="button-login" id="button-login"><span class="icon icon-key"></span></a>
 </div>-->
-
+<div v-if="lightbox" class="lightbox-shadow" v-on:click="closeLightbox"></div>
+<img v-if="lightbox" class="lightbox" :class="lightbox ? '': ''" v-bind:src="lightboxsrc"></img>
+<span v-if="lightbox" class="icon icon-download" v-on:click="downloadMedia(lightboxsrc)"></span>
   <div id="electron-titlebar" class="drag">
   </div>
 
@@ -25,11 +26,11 @@
         <br>
         <br>
         <ul class="list-group">
-          <li v-if="chat.title.includes(filter) || filtered === true" v-for="chat in chats" v-on:click="openChat(chat)" class="list-group-item">
+          <li v-if="chat.title.includes(filter) || filtered === true" v-for="chat in chats" v-on:click="openChat(chat)"  :class="['list-group-item',chat.selected ? 'selected' : '']">
             <img class="img-circle media-object pull-left" v-bind:src="chat.img" width="32" height="32">
             <div class="media-body">
               <strong>{{chat.title}}</strong>
-              <p>{{chat.firstmsg}}</p>
+              <p v-html=" emojiparse(chat.firstmsg)"></p>
             </div>
           </li>
         </ul>
@@ -38,17 +39,21 @@
         <br>
         <br>
         <div class="chat-pane">
-          <li v-for="message in chat" class="message" :class="[ message.unsent ? 'unsent' : '' , message.me ? 'me' : '']" >{{message.text}}
-            <video controls="true" class="direct" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 2" v-bind:src="message.mediashare._params.videos[0].url"></video>
-            <img class="direct" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 1" v-bind:src="message.mediashare._params.images[0].url"></img>
-            <img class="direct" v-if="message.type === 'media'" v-bind:src="message.media[0].url"></img>
-            <img class="direct" v-if="message.type === 'reel_share' && message.reelShare.media.expiring_at != 0" v-bind:src="message.reelShare.media.image_versions2.candidates['0'].url"></img>
+          <li v-for="message in chat" class="message" :class="[ message.unsent ? 'unsent' : '' , message.me ? 'me' : '']" >
+            <p v-if="message.type === 'text'" v-html=" emojiparse(message.text)"></p>
+            <video loop onloadstart="instavideo(this)" class="direct" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 2" v-bind:src="message.mediashare._params.videos[0].url"></video>
+            <div v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 2" class="videoSpritePlayButton" display="none"></div>
+            <span class="icon icon-download" v-on:click="downloadMedia(message.mediashare._params.videos[0].url)" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 2"></span>
+            <img class="direct" v-on:click="openLightbox(message.mediashare._params.images[0].url)" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 1" v-bind:src="message.mediashare._params.images[0].url"></img>
+            <img class="direct"  v-on:click="openLightbox(message.media[0].url)" v-if="message.type === 'media'" v-bind:src="message.media[0].url"></img>
+            <img class="direct" v-on:click="openLightbox(message.reelShare.media.image_versions2.candidates['0'].url)" v-if="message.type === 'reel_share' && message.reelShare.media.expiring_at != 0" v-bind:src="message.reelShare.media.image_versions2.candidates['0'].url"></img>
+            <p style="color : red" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 8">Carousels are not supported at the moment</p>
             <p style="color : red;" v-if="message.type === 'reel_share' && message.reelShare.media.expiring_at == 0">Expired</p>
             <p v-if="message.type === 'reel_share'">{{message.reelShare.text}}</p>
             <a v-if="message.type === 'link'" v-on:click="openLink(message.link._params.text)" href="#">{{message.link._params.text}}</a>
           </li>
         </div>
-        <input v-model="message" type="text" name="send" id="send" placeholder="Type something ..." />
+        <input v-model="message" v-on:keyup.enter="sendMessage" type="text" name="send" id="send" placeholder="Type something ..." />
         <span v-on:click="sendMessage" v-if="messageIsEmpty && chatid != '' " class="icon icon-paper-plane"></span>
       </div>
     </div>
