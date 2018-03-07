@@ -16,7 +16,9 @@ app.on('ready', () => {
     },
     transparent: true,
     frame: false,
-    icon: path.join(__dirname, 'assets/icons/64x64.png')
+    icon: path.join(__dirname, 'assets/icons/64x64.png'),
+    'minHeight': 520,
+    'minWidth': 400
   });
   require('vue-devtools').install()
   mainWindow.loadURL(`file://${__dirname}/index.html`);

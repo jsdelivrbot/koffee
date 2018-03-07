@@ -127,6 +127,7 @@ html , body {
 margin-left: 10px !important;
 width : calc(100% - 20px) !important;
 }
+
 .direct {
   width : auto;
   height: 200px;
@@ -136,16 +137,17 @@ width : calc(100% - 20px) !important;
 }
 
 .icon-paper-plane {
-  position : absolute;
-  bottom : 10px;
-  color :#353857;
-	border-style: solid;
-	border-width : 1px;
-	border-color : #f0f0f2;
-	border-radius : 30px;
-	padding : 17px;
-  left: 15px;
-	-webkit-animation: msg-show .4s ;
+	position: relative;
+	    /* margin-bottom: 20px; */
+	    bottom: 43;
+	    color: #353857;
+	    border-style: solid;
+	    border-width: 1px;
+	    border-color: #f0f0f2;
+	    border-radius: 30px;
+	    padding: 17px;
+	    left: 15px;
+	    -webkit-animation: msg-show .4s;
 }
 
 .drag:before {
@@ -167,7 +169,7 @@ width : calc(100% - 20px) !important;
   outline: none;
   color : #75759c !important ;
 	width : 210;
-  transition: all .2s cubic-bezier(0.420, 0.000, 1.000, 1.000);
+  transition: all .2s;
   border-radius : 20px;
   margin : 5px;
   background: #f0f0f2;
@@ -179,6 +181,31 @@ width : calc(100% - 20px) !important;
   -webkit-app-region: no-drag;
 }
 
+@media screen and (max-width: 600px) {
+  .form-control{
+	  visibility: hidden;
+		opacity : 0;
+		width : 0px;
+  }
+	.icon-search {
+		visibility: hidden;
+		opacity : 0;
+		transform: translateY(-10px);
+	}
+	#contact {
+		left:65px !important;
+	}
+}
+
+#contact{
+transition: all .2s;
+position: absolute;
+z-index: 1;
+left: 250;
+top: -3;
+color: #75759c;
+}
+
 .form-control::placeholder{
 	padding-left: 20px;
   color : #757575;
@@ -186,6 +213,9 @@ width : calc(100% - 20px) !important;
 
 
 #electron-titlebar {
+border-bottom-style: solid;
+border-width: 1px;
+border-color: rgba(0,0,0,.1);
 background: inherit;
 position : absolute;
 z-index : 1;
@@ -194,13 +224,13 @@ width : 100%;
 //box-shadow: rgb(199, 178, 232) 0px 0px 43px 0px;
 }
 
-
 .icon-search{
 	z-index:2;
 	position: absolute;
   color: #757575;
   left: 40px;
   top: 14px;
+	transition: all .2s;
 }
 
 #loading {
@@ -265,6 +295,13 @@ width : 100%;
 	position : absolute;
 	bottom:22px;
 	right : 24px;
+#contact{
+	position: absolute;
+    z-index: 1;
+    left: 250;
+    top: -3;
+    color: #75759c;
+}
 }
 
 #login-loading{
@@ -293,7 +330,7 @@ width : 100%;
 }
 .lightbox {
 	position: absolute;
-	z-index: 11;
+	z-index: 99999;
 	height: 80%;
 	top: 10%;
 	left: 10%;
@@ -307,13 +344,12 @@ width : 100%;
 	100% { opacity: 1; transform: translateY(0px); }
 }
 
-
 .videoSpritePlayButton {
 	top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 	position : absolute;
-  background-image: url("./assets/play.png");
+  background-image: url("../assets/play.png");
   background-repeat-x: no-repeat;
   background-repeat-y: no-repeat;
   background-position-x: 0px;

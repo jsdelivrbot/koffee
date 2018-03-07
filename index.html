@@ -23,13 +23,15 @@
     <transition name="msg">
     <img v-if="loading" id="loading" src="assets/spinner.svg"></img>
   </transition>
+    <p id="contact">{{chattitle}}</p>
     <div class="pane-group">
       <div class="pane-sm sidebar" style="overflow-y : scroll;">
         <br>
         <br>
         <ul class="list-group">
+
           <transition-group tag="div" name="msg" title='Preview'>
-          <li v-if="chat.title.includes(filter) || filtered === true" v-for="chat in chats" v-on:click="openChat(chat)"  :class="['list-group-item',chat.selected ? 'selected' : '']" v-bind:key="chat.title">
+          <li v-ripple="'rgba(0, 0, 0, 0.1)'" v-if="chat.title.includes(filter) || filtered === true" v-for="chat in chats" v-on:click="openChat(chat)"  :class="['list-group-item',chat.selected ? 'selected' : '']" v-bind:key="chat.title">
             <img class="img-circle media-object pull-left" v-bind:src="chat.img" width="32" height="32">
             <div class="media-body">
               <strong>{{chat.title}}</strong>
@@ -44,7 +46,7 @@
         <br>
         <div class="chat-pane">
           <transition-group tag="div" name="msg" title='Preview'>
-          <li v-for="message in chat" class="message" :class="[ message.unsent ? 'unsent' : '' , message.me ? 'me' : '']" v-bind:key="message.id">
+          <li v-ripple="'rgba(0, 0, 0, 0.1)'" v-for="message in chat" class="message" :class="[ message.unsent ? 'unsent' : '' , message.me ? 'me' : '']" :key="message.id">
             <p v-if="message.type === 'text'" v-html=" emojiparse(message.text)"></p>
             <video loop onloadstart="instavideo(this)" class="direct" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 2" v-bind:src="message.mediashare._params.videos[0].url"></video>
             <div v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 2" class="videoSpritePlayButton" display="none"></div>
@@ -59,9 +61,9 @@
           </li>
         </transition-group>
         </div>
-          <input :class="messageIsEmpty && chatid != '' ? '' : 'expanded'" v-model="message" v-on:keyup.enter="sendMessage" type="text" name="send" id="send" placeholder="Type something ..." />
+          <input v-ripple="'rgba(0, 0, 0, 0.2)'" :class="messageIsEmpty && chatid != '' ? '' : 'expanded'" v-model="message" v-on:keyup.enter="sendMessage" type="text" name="send" id="send" placeholder="Type something ..." />
         <transition name="msg">
-        <span v-on:click="sendMessage" v-if="messageIsEmpty && chatid != '' " class="icon icon-paper-plane"></span>
+        <span v-ripple="'rgba(53, 56, 87,0.2)'" v-on:click="sendMessage" v-if="messageIsEmpty && chatid != '' " class="icon icon-paper-plane"></span>
       </transition>
       </div>
     </div>

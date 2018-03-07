@@ -1,4 +1,6 @@
 window.Vue = require('./js_modules/vue.js');
+var vueripple = require("./vue-ripple-directive")
+Vue.directive("ripple",vueripple);
 /***************************************
 TODO linkS
 
@@ -11,6 +13,7 @@ var scrollHeight = 0;
 var app = new Vue({
   el: '#app',
   data: {
+    chattitle : "",
     videocontrols : false,
     moreAvaible: "",
     lightbox : false,
@@ -40,6 +43,7 @@ var app = new Vue({
   },
   methods: {
     openChat: async function(chat) {
+      this.chattitle = chat.title;
       this.chat = [];
       this.chats.forEach(function(v,index){
         v.selected = false;
@@ -155,6 +159,7 @@ var {shell}  = require("electron")
 var Client = require('instagram-private-api').V1;
 var Promise = require('bluebird');
 var chatparser = require('./js_modules/chatparser.js')
+
 require("./js_modules/array-diff.js")
 window.$ = window.jQuery = require('jquery');
 require('./js_modules/emoji.js')

@@ -64,7 +64,7 @@ html.darwin #electron-titlebar > .button {
 html[electron-titlebar-platform=linux] #electron-titlebar > .button {
     top: 0px;
     width: 45px;
-    height: 29px;
+    height: 40px;
 }
 
 html[electron-titlebar-platform=linux] #electron-titlebar > .button.hover {
@@ -88,7 +88,7 @@ html[electron-titlebar-platform=linux] #electron-titlebar > .button-close:active
 }
 
 html[electron-titlebar-platform=linux] #electron-titlebar > .button img {
-    margin-top: 8.5px;
+    margin-top: 13;
     margin-left: 16.5px;
 }
 
@@ -145,7 +145,7 @@ html[electron-titlebar-platform=linux] #electron-titlebar.inset.no-maximize > .b
 html[electron-titlebar-platform=win32] #electron-titlebar > .button {
     top: 0px;
     width: 45px;
-    height: 29px;
+    height: 40px;
 }
 
 html[electron-titlebar-platform=win32] #electron-titlebar > .button.hover {
@@ -169,7 +169,7 @@ html[electron-titlebar-platform=win32] #electron-titlebar > .button-close:active
 }
 
 html[electron-titlebar-platform=win32] #electron-titlebar > .button img {
-    margin-top: 8.5px;
+    margin-top: 13;
     margin-left: 16.5px;
 }
 

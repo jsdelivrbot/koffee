@@ -644,8 +644,22 @@ textarea {
 }
 
 .pane-sm {
-  width: 220px;
+  transition: width .2s;
 }
+
+@media screen and (max-width: 600px) {
+  .pane-sm {
+    width: 55px;
+  }
+}
+
+@media screen and (min-width: 601px) {
+  .pane-sm {
+    width: 220px;
+  }
+}
+
+
 
 .pane-mini {
   width: 80px;
