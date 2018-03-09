@@ -165,8 +165,40 @@ window.$ = window.jQuery = require('jquery');
 require('./js_modules/emoji.js')
 require("./electron-titlebar");
 var instavideo = require('./js_modules/instavideo.js')
-instachat();
-console.log(app.loading);
+var fs = require('fs');
+if (fs.existsSync("./config.json")) {
+  instachat();
+}else{
+  instalogin();
+}
+
+async function instalogin(){
+  const prompt = require('electron-prompt');
+
+   var username = await prompt({
+      title: 'Insert username',
+      label: 'Username:',
+      value: '',
+      inputAttrs: { // attrs to be set if using 'input'
+          type: 'text'
+      },
+      type: 'input'
+  })
+  var password = await prompt({
+     title: 'Insert password',
+     label: 'Password:',
+     value: '',
+     inputAttrs: { // attrs to be set if using 'input'
+         type: 'password'
+     },
+     type: 'input'
+ })
+  fs.writeFile("./config.json", JSON.stringify({user :username,password : password}),function(){
+    instachat()
+  });
+
+}
+
 async function instachat() {
   //$("window-content").removeClass("blur");
   //$("center-form").hide();
