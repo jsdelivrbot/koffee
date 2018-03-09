@@ -63,7 +63,7 @@
         </div>
           <input v-ripple="'rgba(0, 0, 0, 0.2)'" :class="messageIsEmpty && chatid != '' ? '' : 'expanded'" v-model="message" v-on:keyup.enter="sendMessage" type="text" name="send" id="send" placeholder="Type something ..." />
         <transition name="msg">
-        <span v-ripple="'rgba(53, 56, 87,0.2)'" v-on:click="sendMessage" v-if="messageIsEmpty && chatid != '' " class="icon icon-paper-plane"></span>
+        <span v-on:click="sendMessage" v-if="messageIsEmpty && chatid != '' " class="icon icon-paper-plane"></span>
       </transition>
       </div>
     </div>
