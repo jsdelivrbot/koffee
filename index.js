@@ -23,5 +23,5 @@ app.on('ready', () => {
   });
   require('vue-devtools').install()
   mainWindow.loadURL(`file://${__dirname}/index.html`);
-  mainWindow.toggleDevTools();
+  //mainWindow.toggleDevTools();
 });
