@@ -21,7 +21,6 @@ app.on('ready', () => {
     'minHeight': 520,
     'minWidth': 400
   });
-  require('vue-devtools').install()
   mainWindow.loadURL(`file://${__dirname}/index.html`);
   //mainWindow.toggleDevTools();
 });

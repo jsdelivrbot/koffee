@@ -38,7 +38,7 @@ sudo npm install -g electron --unsafe-perm=true --allow-root
 
 ## "I don't want to compile or do strange things, tl;dr"
 
-You can download a release for your platform A$AP
+You can download a release for your platform <a href="https://github.com/koso00/koffee/releases">here</a>
 
 
 ## Incorporated libraries (that i may fork and publish)
