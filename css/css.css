@@ -104,13 +104,13 @@ html , body {
 	opacity : 0.5 !important;
 }
 #send {
-		margin-left: 80px;
+		margin-left: 140px;
 		margin-bottom :10px;
 		padding-right: 5px;
 		padding-top : 5px;
 		padding-bottom : 5px;
 		padding-left:40px;
-		width : calc(100% - 90px);
+		width : calc(100% - 150px);
 		background-color: #f0f0f2;
 		border-radius : 30px;
     border-style : none;
@@ -124,6 +124,11 @@ html , body {
 }
 
 .expanded {
+margin-left: 80px !important;
+width : calc(100% - 90px) !important;
+}
+
+.expandedmore {
 margin-left: 10px !important;
 width : calc(100% - 20px) !important;
 }
@@ -146,7 +151,7 @@ width : calc(100% - 20px) !important;
 	    border-color: #f0f0f2;
 	    border-radius: 30px;
 	    padding: 17px;
-	    left: 15px;
+	    left: 80px;
 			transition : all .2s;
 	    //-webkit-animation: msg-show .4s;
 }
@@ -154,6 +159,24 @@ width : calc(100% - 20px) !important;
 			background-color : rgba(0, 0, 0, 0.2);
 }
 
+
+.icon-picture{
+	position: absolute;
+	    /* margin-bottom: 20px; */
+	    bottom: 10;
+	    color: #353857;
+	    border-style: solid;
+	    border-width: 1px;
+	    border-color: #f0f0f2;
+	    border-radius: 30px;
+	    padding: 17px;
+	    left: 15px;
+			transition : all .2s;
+	    //-webkit-animation: msg-show .4s;
+}
+.icon-picture:hover{
+			background-color : rgba(0, 0, 0, 0.2);
+}
 .drag:before {
   position : absolute;
   top : 0;
@@ -166,7 +189,7 @@ width : calc(100% - 20px) !important;
 .form-control {
 	z-index:1;
 	position :absolute;
-	left : 0;;
+	left : 0;
   border-style : none;
   font-size: 13px;
   line-height: 1.6;

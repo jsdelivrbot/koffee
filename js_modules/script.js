@@ -1,6 +1,18 @@
 window.Vue = require('./js_modules/vue.js');
 var vueripple = require("./vue-ripple-directive")
 Vue.directive("ripple",vueripple);
+
+/*(async function(){
+
+  var username = await prompt({
+     title: 'Insert username',
+     label: 'Login',
+     value: '',
+     inputs : [{label : "Username",type : "text"},{label : "Password",type:"password"}],
+     type: 'multinput'
+  })
+  console.log(username);
+})();
 /***************************************
 TODO linkS
 
@@ -125,7 +137,46 @@ var app = new Vue({
           updatingFlag = false;
         })
       }
+    },
+    sendPicture : async function(){
+        var dialog = require("electron").remote.dialog;
+        var Jimp = require("jimp");
+        path = await dialog.showOpenDialog({filters: [{ name: 'Images', extensions: ['jpg', 'png'] },]})
+        const mime = require("mime");
+        this.loading = true;
 
+        this.chat.push({
+          id : Date.now(),
+          me: true,
+          media: [{url : path[0]}],
+          mediashare: undefined,
+          placeholder: undefined,
+          reelShare: undefined,
+          text: undefined,
+          type: "media",
+          unsent : true
+        })
+        Vue.nextTick(function () {
+          $(".chat-pane").scrollTop(document.getElementsByClassName("chat-pane")[0].scrollHeight);
+          updatingFlag = false;
+        })
+        if (mime.getType(path[0]) == "image/png"){
+          const fs = require("fs");
+          const pngToJpeg = require('png-to-jpeg');
+          let buffer = fs.readFileSync(path[0]);
+          buf = await pngToJpeg({quality: 100})(buffer)
+          console.log(buf)
+          upload = await Client.Upload.photo(session, buf)
+        	console.log(upload.params.uploadId);
+          up = await Client.Thread.configurePhoto(session,6984134194,upload.params.uploadId)
+          console.log(up);
+        }else{
+          upload = await Client.Upload.photo(session, path[0])
+        	console.log(upload.params.uploadId);
+          up = await Client.Thread.configurePhoto(session,this.userid,upload.params.uploadId)
+          console.log(up);
+        }
+        this.loading = false;
     },
     openLink : function(link){
       shell.openExternal(link)
@@ -173,30 +224,38 @@ if (fs.existsSync("./config.json")) {
 }
 
 async function instalogin(){
-  const prompt = require('electron-prompt');
-
-   var username = await prompt({
-      title: 'Insert username',
-      label: 'Username:',
-      value: '',
-      inputAttrs: { // attrs to be set if using 'input'
-          type: 'text'
-      },
-      type: 'input'
-  })
-  var password = await prompt({
-     title: 'Insert password',
-     label: 'Password:',
-     value: '',
-     inputAttrs: { // attrs to be set if using 'input'
-         type: 'password'
-     },
-     type: 'input'
- })
-  fs.writeFile("./config.json", JSON.stringify({user :username,password : password}),function(){
-    instachat()
-  });
-
+  const prompt = require('./electron-prompt');
+  do{
+    var credentials = await prompt({
+       title: 'Insert username',
+       label: 'Login',
+       value: '',
+       inputs : [{label : "Username",type : "text"},{label : "Password",type:"password"}],
+       type: 'multinput'
+    })
+  }while(credentials == undefined);
+  username = credentials[0];
+  password = credentials[1];
+ try{
+   app.loading = true;
+   session = await register(username,password);
+   console.log(session);
+   fs.writeFile("./config.json", JSON.stringify({user :username,password : password}),async function(){
+     console.log("logged in")
+     instachat();
+   });
+ }
+ catch(err){
+   app.loading = false;
+     console.log(err);
+     var password = await prompt({
+        title: 'Error',
+        label: 'Error',
+        text : "Error while loggin in \n Retry with the correct username / password, otherwise you can still enjoy unicorns, they are so magical",
+        type: 'alert'
+    })
+     instalogin();
+ }
 }
 
 async function instachat() {
@@ -221,6 +280,9 @@ async function instachat() {
       case "mediaShare":
         a.firstmsg = "Media Share";
         break;
+    case "like" :
+        a.firstmsg = "❤️"
+          break;
       default: a.firstmsg = "Media";
         break;
     }

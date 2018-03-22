@@ -4,7 +4,8 @@ const remote = require('electron').remote;
 var {
   app,
   BrowserWindow,
-  ipcMain
+  ipcMain,
+  dialog
 } = electron;
 var mainWindow = null;
 

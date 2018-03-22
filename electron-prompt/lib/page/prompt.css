@@ -1,0 +1,128 @@
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src:url('../../../css/fonts/Montserrat-Regular.ttf.woff') format('woff'),
+        url('../../../css/fonts/Montserrat-Regular.ttf.svg#Montserrat-Regular') format('svg'),
+        url('../../../css/fonts/Montserrat-Regular.ttf.eot'),
+        url('../../../css/fonts/Montserrat-Regular.ttf.eot?#iefix') format('embedded-opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Montserrat-Regular';
+    color: #333;
+    background-color: #fff;
+    overflow: hidden;
+    padding: 0px;
+    margin: 0px;
+}
+
+#container {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 100%;
+}
+
+#form {
+  height : 100%;
+    width: 100%;
+}
+
+#label {
+    height: 50px;
+    margin : 20px;
+    font-size : 35px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: linear-gradient(to right, #6758c5, #e072c3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.data {
+    margin: 0 0 1.2em;
+    border-style: none;
+    font-size: 13px;
+    line-height: 1.6;
+    outline: none;
+    color: #75759c !important;
+    width: 90%;
+    border-radius: 20px;
+
+    background: #f0f0f2;
+    padding-top: 5px;
+    padding-right: 20px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+}
+
+p {
+  text-align: left;
+  margin-left : 20px;
+  margin-right : 20px;
+}
+
+select.data {
+    height: 2em;
+}
+
+#data-container {
+    text-align: center;
+}
+
+#buttons {
+    text-align: right;
+    padding: 0 .5em 0 0;
+}
+
+#buttons > button {
+    border-radius: 2px;
+    border: 0;
+    margin: 0 0 0 .5em;
+    font-size: .8em;
+    line-height: 1em;
+    padding: .6em 1em
+}
+
+button:active,button:focus{
+  outline-style: none;
+}
+#ok {
+  border-radius: 30px !important;
+  padding: 15px !important;
+  background-color: transparent;
+  color: #757575;
+  border-style: solid !important;
+  border-width: 1px !important;
+  border-color: #757575 !important;
+  transition : all .2s;
+}
+#ok:hover{
+  background-color: rgb(113, 80, 139);
+  color : white;
+  border-style : none;
+}
+
+#cancel {
+    background-color: #DDD;
+    color: black;
+    border-radius: 30px !important;
+    padding: 15px !important;
+    transition : all .2s;
+}
+#cancel:hover{
+  background-color: rgb(244, 244, 244);
+}
+#electron-titlebar {
+position : relative !important;
+border-bottom-style: solid;
+border-width: 1px;
+border-color: rgba(0,0,0,.1);
+background: inherit;
+z-index : 1;
+background-color : rgba(255,255,255,1);
+width : 100%;
+//box-shadow: rgb(199, 178, 232) 0px 0px 43px 0px;
+}

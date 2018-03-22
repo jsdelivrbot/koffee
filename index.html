@@ -56,15 +56,20 @@
             <img class="direct" v-on:click="openLightbox(message.reelShare.media.image_versions2.candidates['0'].url)" v-if="message.type === 'reel_share' && message.reelShare.media.expiring_at != 0" v-bind:src="message.reelShare.media.image_versions2.candidates['0'].url"></img>
             <p style="color : red" v-if="message.type === 'mediaShare' && message.mediashare._params.mediaType === 8">Carousels are not supported at the moment</p>
             <p style="color : red;" v-if="message.type === 'reel_share' && message.reelShare.media.expiring_at == 0">Expired</p>
-            <p v-if="message.type === 'reel_share'" v-html=" emojiparse(message.reelShare.text)"></p>
+            <p v-if="message.type === 'reel_share'" v-html=" emojiparse('message.reelShare.text')"></p>
+            <p v-if="message.type === 'like'" v-html=" emojiparse('❤️')"></p>
             <a v-if="message.type === 'link'" v-on:click="openLink(message.link._params.text)" href="#">{{message.link._params.text}}</a>
           </li>
         </transition-group>
         </div>
-          <input v-ripple="'rgba(0, 0, 0, 0.2)'" :class="messageIsEmpty && chatid != '' ? '' : 'expanded'" v-model="message" v-on:keyup.enter="sendMessage" type="text" name="send" id="send" placeholder="Type something ..." />
+          <input v-ripple="'rgba(0, 0, 0, 0.2)'" :class="[chatid=='' && !messageIsEmpty ? 'expandedmore' : '',chatid!='' && !messageIsEmpty ? 'expanded' : '']" v-model="message" v-on:keyup.enter="sendMessage" type="text" name="send" id="send" placeholder="Type something ..." />
+          <transition name="msg">
+          <span v-on:click="sendPicture" v-if="chatid != ''" class="icon icon-picture"></span>
+          </transition>
         <transition name="msg">
         <span v-on:click="sendMessage" v-if="messageIsEmpty && chatid != '' " class="icon icon-paper-plane"></span>
       </transition>
+
       </div>
     </div>
   </div>
