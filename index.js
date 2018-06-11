@@ -22,5 +22,5 @@ app.on('ready', () => {
     'minWidth': 400
   });
   mainWindow.loadURL(`file://${__dirname}/index.html`);
-  //mainWindow.toggleDevTools();
+  mainWindow.toggleDevTools();
 });

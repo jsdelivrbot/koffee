@@ -7,17 +7,20 @@
     "start": "electron .",
     "test": "electron -v"
   },
-  "build" : {
+  "build": {
     "win": {
       "icon": "./assets/icons/icon.ico"
     },
-    "linux" : {
-      "target" : ["AppImage","deb"]
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
     }
   },
   "author": {
-    "name" : "koso00",
-    "email" : "danilo.flemma@welan.it"
+    "name": "koso00",
+    "email": "danilo.flemma@welan.it"
   },
   "license": "ISC",
   "dependencies": {
@@ -28,6 +31,7 @@
     "emojify.js": "^1.1.0",
     "es6-shim": "^0.35.3",
     "gulp": "^3.9.1",
+    "gulp-util": "^3.0.8",
     "inquirer": "^5.1.0",
     "instagram-private-api": "git+https://github.com/huttarichard/instagram-private-api.git",
     "jimp": "^0.2.28",
@@ -35,6 +39,7 @@
     "lodash": "^4.17.5",
     "mime": "^2.2.0",
     "png-to-jpeg": "^1.0.1",
+    "superagent": "^3.8.3",
     "vue-bulma-emoji": "0.0.2",
     "vue-emoji": "0.0.2",
     "vue-ripple-directive": "^2.0.1",
